@@ -1,0 +1,66 @@
+[HPM] Proxy created: /api  ->  http://jsonplaceholder.typicode.com
+[HPM] Proxy rewrite rule created: "/api" ~> ""
+[HPM] Proxy created: /ms  ->  https://www.easy-mock.com/mock/592501a391470c0ac1fab128
+ ERROR  Failed to compile with 2 errors14:59:54
+
+These relative modules were not found:
+
+* ./build/dev-client in multi ./build/dev-client babel-polyfill ./src/main.js
+* ./src/main.js in multi ./build/dev-client babel-polyfill ./src/main.js
+> Listening at http://localhost:8010
+
+[HPM] Proxy created: /api  ->  http://jsonplaceholder.typicode.com
+[HPM] Proxy rewrite rule created: "/api" ~> ""
+[HPM] Proxy created: /ms  ->  https://www.easy-mock.com/mock/592501a391470c0ac1fab128
+ ERROR  Failed to compile with 2 errors15:00:10
+
+These relative modules were not found:
+
+* ./build/dev-client in multi ./build/dev-client babel-polyfill ./src/main.js
+* ./src/main.js in multi ./build/dev-client babel-polyfill ./src/main.js
+> Listening at http://localhost:8010
+
+[HPM] Proxy created: /api  ->  http://jsonplaceholder.typicode.com
+[HPM] Proxy rewrite rule created: "/api" ~> ""
+[HPM] Proxy created: /ms  ->  https://www.easy-mock.com/mock/592501a391470c0ac1fab128
+ ERROR  Failed to compile with 2 errors15:00:24
+
+These relative modules were not found:
+
+* ./build/dev-client in multi ./build/dev-client babel-polyfill ./src/main.js
+* ./src/main.js in multi ./build/dev-client babel-polyfill ./src/main.js
+> Listening at http://localhost:8010
+
+[HPM] Proxy created: /api  ->  http://jsonplaceholder.typicode.com
+[HPM] Proxy rewrite rule created: "/api" ~> ""
+[HPM] Proxy created: /ms  ->  https://www.easy-mock.com/mock/592501a391470c0ac1fab128
+ ERROR  Failed to compile with 2 errors15:02:01
+
+These relative modules were not found:
+
+* ./build/dev-client in multi ./build/dev-client babel-polyfill ./src/main.js
+* ./src/main.js in multi ./build/dev-client babel-polyfill ./src/main.js
+> Listening at http://localhost:8010
+
+[HPM] Proxy created: /api  ->  http://jsonplaceholder.typicode.com
+[HPM] Proxy rewrite rule created: "/api" ~> ""
+[HPM] Proxy created: /ms  ->  https://www.easy-mock.com/mock/592501a391470c0ac1fab128
+ ERROR  Failed to compile with 2 errors15:02:11
+
+These relative modules were not found:
+
+* ./build/dev-client in multi ./build/dev-client babel-polyfill ./src/main.js
+* ./src/main.js in multi ./build/dev-client babel-polyfill ./src/main.js
+> Listening at http://localhost:8010
+
+[HPM] Proxy created: /api  ->  http://jsonplaceholder.typicode.com
+[HPM] Proxy rewrite rule created: "/api" ~> ""
+[HPM] Proxy created: /ms  ->  https://www.easy-mock.com/mock/592501a391470c0ac1fab128
+ ERROR  Failed to compile with 2 errors15:02:41
+
+These relative modules were not found:
+
+* ./build/dev-client in multi ./build/dev-client babel-polyfill ./src/main.js
+* ./src/main.js in multi ./build/dev-client babel-polyfill ./src/main.js
+> Listening at http://localhost:8010
+
