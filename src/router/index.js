@@ -10,24 +10,20 @@ export default new Router({
             redirect: '/login'
         },
         {
-            path: '/readme',
+            path: '/',
             component: resolve => require(['../components/common/Home.vue'], resolve),
             children:[
                 {
                     path: '/',
-                    component: resolve => require(['../components/page/Readme.vue'], resolve)
+                    component: resolve => require(['../components/page/userManage.vue'], resolve)
                 },
                 {
                     path: '/userManage',
-                    component: resolve => require(['../components/page/BaseTable.vue'], resolve)
+                    component: resolve => require(['../components/page/userManage.vue'], resolve)
                 },
                 {
                     path: '/roleManage',
-                    component: resolve => require(['../components/page/VueTable.vue'], resolve)     // vue-datasource组件
-                },
-                {
-                    path: '/baseform',
-                    component: resolve => require(['../components/page/BaseForm.vue'], resolve)
+                    component: resolve => require(['../components/page/roleManage.vue'], resolve)
                 }
             ]
         },
