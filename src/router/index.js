@@ -19,7 +19,7 @@ export default new Router({
                 },
                 {
                     path: '/userManage',
-                    component: resolve => require(['../components/page/BaseTable.vue'], resolve)
+                    component: resolve => require(['../components/page/UserManage.vue'], resolve)
                 },
                 {
                     path: '/roleManage',
