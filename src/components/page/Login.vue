@@ -50,7 +50,7 @@
                             res = res && res.data;
                             if(res && res.code == '0'){
                                 localStorage.setItem('ms_username',res.resultMap.adminInfo.name);
-                                self.$router.push('/readme');
+                                self.$router.push('/userManage');
                             }else if(res && res.code == '1'){
                                 self.msg = res.message;
                                 self.loginCK = true;
