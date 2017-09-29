@@ -12,13 +12,14 @@
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
                 </div>
-                <p style="font-size:12px;line-height:30px;color:#999;">Tips : 用户名和密码随便填。</p>
+                <p v-if="loginCK" style="font-size:12px;line-height:30px;color:#ff00ff;">{{msg}}</p>
             </el-form>
         </div>
     </div>
 </template>
 
 <script>
+    import md5 from 'js-md5';
     export default {
         data: function(){
             return {
@@ -33,7 +34,9 @@
                     password: [
                         { required: true, message: '请输入密码', trigger: 'blur' }
                     ]
-                }
+                },
+                msg:'登陆异常',
+                loginCK:false
             }
         },
         methods: {
@@ -41,10 +44,22 @@
                 const self = this;
                 self.$refs[formName].validate((valid) => {
                     if (valid) {
-                        localStorage.setItem('ms_username',self.ruleForm.username);
-                        self.$router.push('/userManage');
+                        let params = JSON.stringify({"msgId":"ADMIN_LOGIN","userName":self.ruleForm.username,"password":md5(self.ruleForm.password)});
+                        let reqUrl = 'http://10.96.17.55:9827/serverBack/back/service.do';
+                        self.$axios.post(reqUrl,"text="+params).then((res) => {
+                            res = res && res.data;
+                            if(res && res.code == '0'){
+                                localStorage.setItem('ms_username',res.resultMap.adminInfo.name);
+                                self.$router.push('/userManage');
+                            }else if(res && res.code == '1'){
+                                self.msg = res.message;
+                                self.loginCK = true;
+                            }else {
+                               self.msg ='登陆异常';
+                                self.loginCK = true;
+                            }
+                        });
                     } else {
-                        console.log('error submit!!');
                         return false;
                     }
                 });
