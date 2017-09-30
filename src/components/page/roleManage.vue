@@ -169,9 +169,7 @@
 
                 self.$axios.post(self.url, 'text='+ JSON.stringify(postData)).then((res) => {
                     self.pageNum = res.data.resultMap.roleList.length;
-                    if(self.pageNum <= 20){
-                        self.pageNum = 20;
-                    }
+
                 })
             },
             search(){
