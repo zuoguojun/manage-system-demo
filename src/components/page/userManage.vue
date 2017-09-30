@@ -258,35 +258,58 @@
                 self.dialogAddFormVisible = true;
             },
             handleDelete(index, row) {
-                let self = this;
-                let params = JSON.stringify({"msgId": "ADMIN_DEL", "adminIds": [row.id]});
-                self.$axios.post(self.url, "text=" + params).then((res) => {
-                    console.log(res.data);
-                    if (res.data.code == "0") {
-                        this.getData();
-                        self.$message.success('删除成功');
-                    } else {
-                        self.$message.error('删除失败');
-                    }
+                this.$confirm('此操作将删除该用户, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    let self = this;
+                    let params = JSON.stringify({"msgId": "ADMIN_DEL", "adminIds": [row.id]});
+                    self.$axios.post(self.url, "text=" + params).then((res) => {
+                        console.log(res.data);
+                        if (res.data.code == "0") {
+                            this.getData();
+                            self.$message.success('删除成功');
+                        } else {
+                            self.$message.error('删除失败');
+                        }
+                    });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
                 });
+
             },
             delAll() {
-                const self = this,
-                    length = self.multipleSelection.length;
-                let delUserIds = [];
-                for (let i = 0; i < length; i++) {
-                    delUserIds.push(self.multipleSelection[i].id);
-                }
-                self.multipleSelection = [];
-                let params = JSON.stringify({"msgId": "ADMIN_DEL", "adminIds": delUserIds});
-                self.$axios.post(self.url, "text=" + params).then((res) => {
-                    console.log(res.data);
-                    if (res.data.code == "0") {
-                        this.getData();
-                        self.$message.success('删除成功');
-                    } else {
-                        self.$message.error('删除失败');
+                this.$confirm('此操作将删除选中用户, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    const self = this,
+                        length = self.multipleSelection.length;
+                    let delUserIds = [];
+                    for (let i = 0; i < length; i++) {
+                        delUserIds.push(self.multipleSelection[i].id);
                     }
+                    self.multipleSelection = [];
+                    let params = JSON.stringify({"msgId": "ADMIN_DEL", "adminIds": delUserIds});
+                    self.$axios.post(self.url, "text=" + params).then((res) => {
+                        console.log(res.data);
+                        if (res.data.code == "0") {
+                            this.getData();
+                            self.$message.success('删除成功');
+                        } else {
+                            self.$message.error('删除失败');
+                        }
+                    });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
                 });
             },
             handleSelectionChange(val) {

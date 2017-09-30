@@ -70,17 +70,7 @@
                     </el-form>
                 </div>
             </el-dialog>
-            <el-dialog
-                title="删除提示"
-                :visible.sync="confirmDialogVisible"
-                size="tiny"
-                :before-close="handleClose">
-                <span>确认删除？</span>
-                <span slot="footer" class="dialog-footer">
-                    <el-button @click="confirmCancel">取 消</el-button>
-                    <el-button type="primary" @click="confirmDelete(multipleSelection)">确 定</el-button>
-                </span>
-            </el-dialog>
+
         </div>
     </div>
 
@@ -99,7 +89,6 @@
                 del_list: [],
                 is_search: false,
                 dialogVisible: false,
-                confirmDialogVisible: false,
                 title:"新增角色",
                 pageNum: 0,
                 form: {
@@ -247,9 +236,49 @@
                 })
             },
             delAll(multipleSelection){
-                const self = this,
-                    length = self.multipleSelection.length;
-                self.confirmDialogVisible = true;
+
+
+
+                this.$confirm('确认删除这些角色?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    const self = this,
+                        length = self.multipleSelection.length;
+                    let str = '';
+                    self.del_list = self.del_list.concat(self.multipleSelection);
+                    let deleteArr = [];
+                    for(var i = 0; i < length; i++){
+                        deleteArr.push(+(self.multipleSelection[i].id));
+                    }
+
+                    if(deleteArr.length <= 0) {
+                        return false;
+                    }
+
+                    let postData = {
+                        "msgId": "ROLE_DEL",
+                        "roleIds": deleteArr
+                    }
+
+                    self.$axios.post(self.url, 'text='+ JSON.stringify(postData)).then((res) => {
+                        if(res.data.code == 0) {
+
+                            this.$message.success('删除' + deleteArr.length + '个角色成功！');
+                            self.getData();
+                        }else {
+                            self.$message.error('删除角色失败');
+                        }
+                        self.multipleSelection = [];
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+
             },
             handleSelectionChange(val) {
                 this.multipleSelection = val;
@@ -295,40 +324,6 @@
                     }
                 });
 
-            },
-            confirmCancel() {
-                self.confirmDialogVisible = false;
-            },
-            confirmDelete(multipleSelection) {
-                const self = this,
-                    length = self.multipleSelection.length;
-
-                let str = '';
-                self.del_list = self.del_list.concat(self.multipleSelection);
-                let deleteArr = [];
-                for(var i = 0; i < length; i++){
-                    deleteArr.push(+(self.multipleSelection[i].id));
-                }
-
-                if(deleteArr.length <= 0) {
-                    return false;
-                }
-
-                let postData = {
-                    "msgId": "ROLE_DEL",
-                    "roleIds": deleteArr
-                }
-
-                self.$axios.post(self.url, 'text='+ JSON.stringify(postData)).then((res) => {
-                    if(res.data.code == 0) {
-                        self.confirmDialogVisible = false;
-                        this.$message.success('删除' + deleteArr.length + '个角色成功！');
-                        self.getData();
-                    }else {
-                        self.$message.error('删除角色失败');
-                    }
-                    self.multipleSelection = [];
-                })
             }
         }
     }
