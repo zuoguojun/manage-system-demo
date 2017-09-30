@@ -25,11 +25,6 @@
             return {
                 items: [
                     {
-                        icon: 'el-icon-setting',
-                        index: 'readme',
-                        title: '自述'
-                    },
-                    {
                         icon: 'el-icon-menu',
                         index: 'userManage',
                         title: '用户管理'

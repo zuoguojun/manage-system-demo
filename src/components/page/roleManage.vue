@@ -9,10 +9,10 @@
             <div class="handle-box">
                 <el-button type="primary" icon="add" class="handle-del mr10 el-icon-plus" @click="handleAddRole">添加角色</el-button>
                 <el-button type="primary" icon="delete" class="handle-del mr10" @click="delAll(multipleSelection)">批量删除</el-button>
-                <el-select v-model="select_cate" placeholder="筛选角色" class="handle-select mr10">
+               <!-- <el-select v-model="select_cate" placeholder="筛选角色" class="handle-select mr10">
                     <el-option key="1" label="所有" value="所有"></el-option>
                     <el-option key="1" label="超级管理员" value="超级管理员"></el-option>
-                </el-select>
+                </el-select>-->
                 <el-input v-model="select_word" placeholder="筛选关键词" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="search" @click="search">搜索</el-button>
             </div>
@@ -39,7 +39,7 @@
                 <el-pagination
                         @current-change ="handleCurrentChange"
                         layout="prev, pager, next"
-                        :total="1000">
+                        :total="pageNum">
                 </el-pagination>
             </div>
         </div>
@@ -54,15 +54,18 @@
 
                 <div class="form-box">
                     <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-                        <el-form-item label="模块名称" prop="name" required>
+                        <el-form-item label="角色名称" prop="name" required>
                             <el-input v-model="form.name"></el-input>
                         </el-form-item>
-                        <el-form-item label="模块描述">
+                        <el-form-item label="角色描述">
                             <el-input v-model="form.description"></el-input>
+                        </el-form-item>
+                        <el-form-item label="排序id" hidden>
+                            <el-input v-model="form.id" readonly hidden></el-input>
                         </el-form-item>
                         <el-form-item>
                             <el-button type="primary" @click="onSubmit('form', title)">确定</el-button>
-                            <el-button>取消</el-button>
+                            <el-button @click="dialogVisible = false">取消</el-button>
                         </el-form-item>
                     </el-form>
                 </div>
@@ -70,7 +73,7 @@
             <el-dialog
                 title="删除提示"
                 :visible.sync="confirmDialogVisible"
-                size="middle"
+                size="tiny"
                 :before-close="handleClose">
                 <span>确认删除？</span>
                 <span slot="footer" class="dialog-footer">
@@ -98,6 +101,7 @@
                 dialogVisible: false,
                 confirmDialogVisible: false,
                 title:"新增角色",
+                pageNum: 0,
                 form: {
                     name: '',
                     description: '',
@@ -105,7 +109,7 @@
                 },
                 rules: {
                     name: [
-                        { required: true, message: '请输入模块名称', trigger: 'blur' },
+                        { required: true, message: '请输入角色名称', trigger: 'blur' },
                         { min: 1, max: 32, message: '长度在 1 到 32 个字符', trigger: 'blur' }
                     ]
                 }
@@ -114,6 +118,7 @@
         },
         created(){
             this.getData();
+            this.getPageNum();
         },
         computed: {
             data(){
@@ -129,7 +134,12 @@
                             break;
                         }
                     }
+
                     if(!is_del){
+                        /*if(self.select_cate){
+
+                        }*/
+
                         if(d.name.indexOf(self.select_cate) > -1 &&
                             (d.name.indexOf(self.select_word) > -1)
                         ){
@@ -142,13 +152,19 @@
         methods: {
             handleCurrentChange(val){
                 this.cur_page = val;
-                this.getData();
+                this.getData(val);
             },
-            getData(){
+            getData(pageIndex){
                 let self = this;
+                if(!pageIndex){
+                    pageIndex = 0;
+                }else{
+                    pageIndex--;
+                }
+
                 let postData = {
                     "msgId": "ROLE_LIST",
-                    "index": 0,
+                    "index": pageIndex * 20,
                     "pageSize": 20
                 };
 
@@ -156,8 +172,35 @@
                     self.tableData = res.data.resultMap.roleList;
                 })
             },
+            getPageNum() {
+                let self = this;
+                let postData = {
+                    "msgId": "ROLE_LIST"
+                };
+
+                self.$axios.post(self.url, 'text='+ JSON.stringify(postData)).then((res) => {
+                    self.pageNum = res.data.resultMap.roleList.length;
+                    if(self.pageNum <= 20){
+                        self.pageNum = 20;
+                    }
+                })
+            },
             search(){
                 this.is_search = true;
+                let self = this;
+               console.log("select_word-->", self.select_word);
+
+                let postData = {
+                    "msgId": "ROLE_LIST",
+                    "index": 0,
+                    "pageSize": 20,
+                    "name": self.select_word
+                };
+
+                self.$axios.post(self.url, 'text='+ JSON.stringify(postData)).then((res) => {
+                    self.tableData = res.data.resultMap.roleList;
+                    self.pageNum = self.tableData.length;
+                })
             },
             formatter(row, column) {
                 return row.address;
@@ -169,9 +212,11 @@
                 //this.$message('编辑第'+(index+1)+'行');
                 this.form = {
                     name: row.name,
-                    description: row.description
-
+                    description: row.description,
+                    id: row.id
                 };
+                console.log("row.id--->", row.id);
+
                 this.title = "修改角色";
                 this.dialogVisible = true;
             },
@@ -182,6 +227,7 @@
                     name: "",
                     description: ""
                 };
+                this.title = "新增角色";
             },
             handleDelete(index, row) {
                 let self = this;
@@ -220,11 +266,20 @@
 
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
+                        var actionType = "ROLE_ADD";
+                        if(title.indexOf("修改") != -1){
+                            actionType = "ROLE_EDIT";
+                        }
+
                         let postData = {
-                            "msgId": "ROLE_ADD",
+                            "msgId": actionType,
                             "name": this.form.name,
                             "description": this.form.description
                         };
+
+                        if(actionType == "ROLE_EDIT"){
+                            postData.id = this.form.id;
+                        }
 
                         self.$axios.post(self.url, 'text='+ JSON.stringify(postData)).then((res) => {
                             if(res.data.code == 0) {
